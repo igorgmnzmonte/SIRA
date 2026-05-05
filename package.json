@@ -4,6 +4,9 @@
   "description": "Projeto-de-PWEB2-ER",
   "main": "index.js",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "prepare": "husky"
@@ -12,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "prettier": "^3.8.3"
+    "prettier": "^3.8.3",
+    "vite": "^8.0.10"
   }
 }
