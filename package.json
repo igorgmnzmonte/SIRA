@@ -1,8 +1,9 @@
 {
   "name": "sira-sistema-de-reserva-salas-e-equipamentos",
   "version": "1.0.0",
-  "description": "Projeto-de-PWEB2-ER",
-  "main": "index.js",
+  "description": "SIRA — Sistema de Reserva de Salas e Equipamentos (Projeto PWEB2)",
+  "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -12,9 +13,10 @@
     "prepare": "husky"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Gabriel Marques",
+  "license": "MIT",
   "devDependencies": {
+    "husky": "^9.1.7",
     "prettier": "^3.8.3",
     "vite": "^8.0.10"
   }
