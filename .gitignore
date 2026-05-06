@@ -4,17 +4,33 @@ node_modules/
 # Produção (Vite)
 dist/
 dist-ssr/
+.vite/
 *.local
+
+# Variáveis de ambiente (Vite carrega .env* automaticamente)
+.env
+.env.local
+.env.*.local
 
 # Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Cache de ferramentas
+.eslintcache
+coverage/
+.nyc_output/
 
 # Sistema e IDE
 .vscode/
+.idea/
 .DS_Store
 Thumbs.db
+*.swp
+*.swo
 
-# Husky (diretório gerado pelo `husky` install)
+# Husky (diretório interno gerado pelo `husky install`)
 .husky/_
