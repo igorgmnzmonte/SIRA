@@ -15,3 +15,6 @@ yarn-error.log*
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Husky (diretório gerado pelo `husky` install)
+.husky/_
