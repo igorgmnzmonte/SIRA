@@ -2,7 +2,7 @@ import './style.css';
 import './auth.css';
 
 import { el } from './utils/dom.js';
-import { login, CURRENT_USER } from './data/store.js';
+import { tryRestoreSession, login, CURRENT_USER } from './data/store.js';
 
 // ── Tela de login ────────────────────────────────────────────
 function renderLogin() {
@@ -62,6 +62,8 @@ function renderLogin() {
 
 // ── Bootstrap ───────────────────────────────────────────────
 function bootstrap() {
+  tryRestoreSession();
+
   if (!CURRENT_USER) {
     renderLogin();
     return;
