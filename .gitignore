@@ -40,8 +40,8 @@ Thumbs.db
 # (build de PDFs, importadores do board do GitHub) que rodam só local.
 # A pasta membros/ guarda PDFs distribuídos para a equipe.
 .py/
-membros/
 *.pdf
+!docs/membros/*.pdf
 *.patch
 
 # Python (caso alguém rode os scripts auxiliares)
