@@ -1,7 +1,11 @@
 # SIRA — Sistema de Reserva de Salas e Equipamentos
 
-Aplicação web para gerenciar reservas de salas e equipamentos, desenvolvida como
-projeto da disciplina **PWEB2 — Programação para Web 2**.
+Aplicação web para gerenciar reservas de salas e equipamentos, desenvolvida
+como projeto integrado das disciplinas:
+
+- **PWEB2 — Programação para Web 2** (implementação da aplicação)
+- **Engenharia de Requisitos de Software** (levantamento, especificação e
+  validação dos requisitos)
 
 > Status: em desenvolvimento ativo. A primeira sprint é em **JavaScript puro
 > (ES Modules)** servido pelo Vite; a segunda sprint migra a camada de
@@ -25,10 +29,10 @@ projeto da disciplina **PWEB2 — Programação para Web 2**.
 
 ## ✅ Pré-requisitos
 
-- **Node.js 20** — fixado em [`.nvmrc`](.nvmrc). O Vite 8 e o Rolldown
-  exigem `^20.19.0 || >=22.12.0`. Rodar com Node 18 emite avisos de
-  `EBADENGINE` e pode quebrar o build.
-- **npm** (já vem com o Node).
+- **Node.js 24 LTS** — fixado em [`.nvmrc`](.nvmrc). O Vite 8 e o Rolldown
+  exigem `^20.19.0 || >=22.12.0`; o projeto adota a LTS atual (24.x) para
+  ficar dentro do range suportado e evitar avisos de `EBADENGINE`.
+- **npm 11+** (já vem bundled com o Node 24).
 - Recomendado: [`nvm`](https://github.com/nvm-sh/nvm) para alternar versões.
 
 ```bash
@@ -85,7 +89,7 @@ A aplicação estará disponível em **http://localhost:5173**.
 ├── src/                    # Código-fonte da aplicação
 │   ├── main.js             # Entry point JS — monta o markup em #app e importa o CSS
 │   └── style.css           # Estilos globais
-├── .nvmrc                  # Versão do Node (20)
+├── .nvmrc                  # Versão do Node (24 LTS)
 ├── .prettierrc             # Regras do Prettier (semi, single quote, trailing comma)
 ├── .prettierignore         # Arquivos ignorados pelo Prettier
 ├── eslint.config.js        # ESLint flat config + integração com Prettier
