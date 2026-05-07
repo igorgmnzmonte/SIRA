@@ -87,14 +87,22 @@ A aplicação estará disponível em **http://localhost:5173**.
 │   └── pre-commit          # Dispara `npx lint-staged` antes de cada commit
 ├── public/                 # Assets estáticos copiados como estão para a raiz do build
 ├── src/                    # Código-fonte da aplicação
-│   ├── main.js             # Entry point JS — monta o markup em #app e importa o CSS
-│   └── style.css           # Estilos globais
+│   ├── data/
+│   │   ├── logins.json     # Seed do usuário admin
+│   │   └── store.js        # Camada AUTH (CURRENT_USER, login, logout, tryRestoreSession) — estendida pelos demais membros
+│   ├── utils/
+│   │   ├── dom.js          # Factories de elementos: el, btn, badge, toast, tableRow, confirm
+│   │   └── fp.js           # Helpers funcionais: filterByText, computeStats (reduce), initials, statusBadge, etc.
+│   ├── auth.css            # Estilos das telas de login e cadastro
+│   ├── home.css            # Estilos da home (calendário/dashboard — USes futuras)
+│   ├── main.js             # Entry point — bootstrap, renderLogin e renderSignup inline
+│   └── style.css           # Estilos globais com CSS Variables e suporte a dark mode
 ├── .nvmrc                  # Versão do Node (24 LTS)
 ├── .prettierrc             # Regras do Prettier (semi, single quote, trailing comma)
 ├── .prettierignore         # Arquivos ignorados pelo Prettier
 ├── eslint.config.js        # ESLint flat config + integração com Prettier
 ├── index.html              # Entry point HTML do Vite (carrega /src/main.js como módulo)
-├── vite.config.js          # Configuração do Vite (define o `base` para o GitHub Pages)
+├── vite.config.js          # Configuração do Vite (base condicional via env GITHUB_PAGES)
 ├── package.json
 └── package-lock.json
 ```
@@ -125,9 +133,10 @@ workflow `deploy.yml` roda o build e publica a pasta `dist/` no GitHub
 Pages.
 
 - URL pública: `https://<usuario>.github.io/SIRA-Sistema-de-Reserva-Salas-e-Equipamentos/`
-- O `vite.config.js` já define `base: '/SIRA-Sistema-de-Reserva-Salas-e-Equipamentos/'`
-  para que os assets sejam resolvidos corretamente dentro do subpath do
-  GitHub Pages.
+- O `vite.config.js` aplica o `base` apenas quando `GITHUB_PAGES=true`
+  (variável injetada pelo step _Build_ do `deploy.yml`). Em
+  desenvolvimento e `npm run preview` locais, a `base` é `/` — sem
+  subpath, sem precisar lembrar de URL especial.
 
 > **Pré-condição:** habilite **GitHub Pages → Source: GitHub Actions** nas
 > configurações do repositório.
@@ -150,6 +159,36 @@ Modelo simplificado, com proteções na `main`:
 **Convenção de commits:** mensagens curtas em português, com prefixos
 estilo Conventional Commits — `feat`, `fix`, `chore`, `ci`, `docs`,
 `refactor`, `test`.
+
+---
+
+## 🗺️ Roadmap da entrega — Gabriel Marques
+
+Responsável pelo bloco **Fundação + Autenticação + Tema** do SIRA — 6 das
+25 user stories do projeto. As demais ficam com os outros quatro membros
+do time (Ian, Igor, José Henrique e Pedro).
+
+| US    | Descrição                                | Status                           | PR                                                                                                   |
+| ----- | ---------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| US-01 | Configurar projeto base com Vite         | ✅ Mergeada                      | [#125](https://github.com/GabeMarques-Intetsu/SIRA-Sistema-de-Reserva-Salas-e-Equipamentos/pull/125) |
+| US-02 | Criar utilitários e estilos globais      | ✅ Mergeada                      | [#126](https://github.com/GabeMarques-Intetsu/SIRA-Sistema-de-Reserva-Salas-e-Equipamentos/pull/126) |
+| US-03 | Permitir login pelo e-mail institucional | ✅ Mergeada                      | [#127](https://github.com/GabeMarques-Intetsu/SIRA-Sistema-de-Reserva-Salas-e-Equipamentos/pull/127) |
+| US-04 | Permitir solicitação de cadastro         | ✅ Mergeada                      | [#128](https://github.com/GabeMarques-Intetsu/SIRA-Sistema-de-Reserva-Salas-e-Equipamentos/pull/128) |
+| US-05 | Permitir logout do sistema               | ⏳ Aguarda US-06 (sidebar — Ian) | —                                                                                                    |
+| US-09 | Alternar tema claro/escuro               | ⏳ Aguarda US-06 (sidebar — Ian) | —                                                                                                    |
+
+**O que já funciona em `develop`:**
+
+- Tela de login validando contra o seed inicial (`admin@ifpb.edu.br`)
+- Tela de cadastro com validação de campos obrigatórios e ID `su-<timestamp>`
+- Sessão persistente em `localStorage["sira-auth"]` restaurada no
+  bootstrap (sobrevive a `F5`)
+- Folhas de estilo com CSS Variables prontas para o toggle de tema
+  claro/escuro (US-09)
+
+**Pendências do dono:** US-05 e US-09 dependem do componente `sidebar.js`
+que entra em `develop` via US-06. Após o merge da sidebar, ambas serão
+implementadas em sequência.
 
 ---
 
