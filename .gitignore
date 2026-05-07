@@ -41,7 +41,7 @@ Thumbs.db
 # A pasta membros/ guarda PDFs distribuídos para a equipe.
 .py
 *.pdf
-!docs/team-tasks/*.pdf
+!docs/team-tasks/sprint-1/*.pdf
 !docs/reports/*.pdf
 *.patch
 
