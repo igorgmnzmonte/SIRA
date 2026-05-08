@@ -19,7 +19,7 @@ import { renderNovaReserva } from './modules/novaReserva.js';
 
 import { tryRestoreSession, login, CURRENT_USER } from './data/store.js';
 
-// [Apresentação] Roteador Funcional (Dispatcher)
+// [Apresentação] Roteador Funcional (Dispatcher): Mapeamos strings para funções de renderização.
 const PAGE_RENDERERS = {
   dashboard: renderDashboard,
   calendario: renderCalendar,
@@ -30,6 +30,22 @@ const PAGE_RENDERERS = {
   notificacoes: renderNotifications,
   novaReserva: renderNovaReserva,
 };
+
+// ── T-08.3: ADICIONA DATA-LABEL NAS CÉLULAS PARA RESPONSIVIDADE MOBILE ──
+// [Apresentação] Esta função percorre as tabelas e injeta o texto do cabeçalho em cada célula.
+// Isso permite que o CSS transforme a tabela em "cards" no celular usando pseudo-elementos.
+function addTableLabels(container) {
+  container.querySelectorAll('table').forEach((table) => {
+    const headers = [...table.querySelectorAll('thead th')].map((th) =>
+      th.textContent.trim(),
+    );
+    table.querySelectorAll('tbody tr').forEach((tr) => {
+      [...tr.querySelectorAll('td')].forEach((td, i) => {
+        if (headers[i]) td.setAttribute('data-label', headers[i]);
+      });
+    });
+  });
+}
 
 // ── Funções de Autenticação ──
 function renderLogin() {
@@ -92,9 +108,7 @@ function bootstrap() {
 
   main.appendChild(pageContainer);
 
-  // ── T-08.2: OVERLAY DE FECHAMENTO (Parte 1: Criação) ──
-  // [Apresentação] Criamos um elemento de fundo que escurece a tela no mobile.
-  // Ao clicar nele, removemos a classe 'open' tanto da sidebar quanto do próprio overlay.
+  // ── T-08.2: OVERLAY DE FECHAMENTO ──
   const overlay = el('div', { class: 'sidebar-overlay' });
   overlay.addEventListener('click', () => {
     sidebarContainer.querySelector('.sidebar')?.classList.remove('open');
@@ -102,6 +116,7 @@ function bootstrap() {
   });
   document.body.appendChild(overlay);
 
+  // [Apresentação] Função de Navegação Centralizada com Camada de Segurança e Mobile Labels
   function navigate(pageName) {
     if (!CURRENT_USER) return;
 
@@ -121,9 +136,12 @@ function bootstrap() {
 
     pageContainer.innerHTML = '';
     renderer(pageContainer);
+
+    // T-08.3: Aplica labels de acessibilidade/responsividade nas tabelas da nova página
+    addTableLabels(pageContainer);
   }
 
-  // ── T-08.1 e T-08.2: BOTÃO HAMBÚRGUER E ABERTURA DO OVERLAY ──
+  // ── T-08.1: INJETAR BOTÃO HAMBÚRGUER DINÂMICO ──
   const topbarObserver = new MutationObserver(() => {
     const topbar = pageContainer.querySelector('.topbar');
     if (topbar && !topbar.querySelector('.hamburger')) {
@@ -133,7 +151,6 @@ function bootstrap() {
           class: 'hamburger',
           onClick: () => {
             sidebarContainer.querySelector('.sidebar')?.classList.add('open');
-            // T-08.2: Faz o overlay aparecer quando o menu abre
             overlay.classList.add('open');
           },
         },
