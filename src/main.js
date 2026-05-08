@@ -96,6 +96,13 @@ function bootstrap() {
     const renderer = PAGE_RENDERERS[pageName];
     if (!renderer) return;
 
+    // ── T-07.2: ATUALIZAÇÃO DA URL ──
+    // [Apresentação] Usamos pushState para mudar o endereço no navegador sem dar refresh.
+    if (window.location.pathname !== `/${pageName}`) {
+      window.history.pushState({}, '', `/${pageName}`);
+    }
+
+    // Limpa a página atual e renderiza a nova
     pageContainer.innerHTML = '';
     renderer(pageContainer);
   }
