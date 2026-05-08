@@ -87,6 +87,72 @@ export function createSidebar(
     sidebar.appendChild(navItem);
   });
 
+  // ... (após o loop NAV_ITEMS.forEach) ...
+
+  // ── Rodapé fixo ──
+  const bottom = el('div', { class: 'sidebar-bottom' });
+
+  // Aciona a troca de tema via callback
+  const toggleBtn = el('div', { class: 'dark-toggle', onClick: onToggleDark });
+  const toggleRow = el(
+    'div',
+    {
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 12px 8px',
+      },
+    },
+    el(
+      'span',
+      { style: { fontSize: '11px', color: 'var(--text-tertiary)' } },
+      'Modo escuro',
+    ),
+    toggleBtn,
+  );
+
+  // Exibe dados do usuário logado injetados via prop 'currentUser'
+  const userPill = el(
+    'div',
+    { class: 'user-pill' },
+    el('div', { class: 'avatar' }, initials(currentUser.name)),
+    el(
+      'div',
+      { style: { flex: 1 } },
+      el('div', { class: 'user-name' }, currentUser.name),
+      el('div', { class: 'user-role' }, currentUser.role),
+    ),
+    el(
+      'button',
+      {
+        style: {
+          background: 'transparent',
+          border: '1px solid var(--border-color)',
+          padding: '2px 6px',
+          fontSize: '10px',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          color: 'var(--text-secondary)',
+        },
+        onClick: () => {
+          // Lazy Loading: só importa a store e carrega o script de logout se o usuário de fato clicar em sair.
+          import('../data/store.js').then((m) => {
+            m.logout();
+            location.reload();
+          });
+        },
+      },
+      'Sair',
+    ),
+  );
+
+  bottom.appendChild(toggleRow);
+  bottom.appendChild(userPill);
+  sidebar.appendChild(bottom);
+
+  // container.appendChild(sidebar); // Linha que já existia
+
   // O bottom será adicionado no próximo commit
 
   // Single DOM Append: Injeta tudo de uma vez na tela para melhor performance.
