@@ -102,7 +102,6 @@ function bootstrap() {
     const isAdmin = CURRENT_USER.role === 'admin';
     const allowedForUser = ['reservas', 'calendario', 'novaReserva'];
 
-    // Se o usuário não for admin e tentar acessar rota restrita, redireciona para o calendário.
     if (!isAdmin && !allowedForUser.includes(pageName)) {
       console.warn(`Acesso negado à rota: ${pageName}. Redirecionando...`);
       pageName = 'calendario';
@@ -120,6 +119,28 @@ function bootstrap() {
     pageContainer.innerHTML = '';
     renderer(pageContainer);
   }
+
+  // ── T-08.1: INJETAR BOTÃO HAMBÚRGUER DINÂMICO ──
+  // [Apresentação] O MutationObserver monitora o pageContainer. Sempre que o conteúdo mudar,
+  // verificamos se a página renderizada possui uma .topbar para injetar o botão de menu mobile.
+  const topbarObserver = new MutationObserver(() => {
+    const topbar = pageContainer.querySelector('.topbar');
+    if (topbar && !topbar.querySelector('.hamburger')) {
+      const hbtn = el(
+        'button',
+        {
+          class: 'hamburger',
+          onClick: () => {
+            sidebarContainer.querySelector('.sidebar')?.classList.add('open');
+            document.querySelector('.sidebar-overlay')?.classList.add('open');
+          },
+        },
+        el('span', {}),
+      );
+      topbar.prepend(hbtn);
+    }
+  });
+  topbarObserver.observe(pageContainer, { childList: true, subtree: true });
 
   // Inicializa o Sidebar injetando a função de navegação
   createSidebar(sidebarContainer, CURRENT_USER, navigate, () => {
