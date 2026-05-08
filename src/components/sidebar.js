@@ -33,6 +33,66 @@ const NAV_ITEMS = [
   { page: 'notificacoes', label: 'Notificações', icon: svgBell, section: null },
 ];
 
+// Componente de UI puro: recebe dados e callbacks, não gerencia estado próprio.
+export function createSidebar(
+  container,
+  currentUser,
+  onNavigate,
+  onToggleDark,
+) {
+  const sidebar = el('aside', { class: 'sidebar' });
+
+  // ── Montagem do Logo ──
+  sidebar.appendChild(
+    el(
+      'div',
+      { class: 'sidebar-logo' },
+      el('div', { class: 'logo-mark' }, 'SIRA'),
+      el('div', { class: 'logo-sub' }, 'Sistema de Reserva de Salas'),
+    ),
+  );
+
+  // ── Renderização dos Botões ──
+  let currentSection = null;
+
+  NAV_ITEMS.forEach((item) => {
+    // Cria cabeçalho de seção (ex: "ADMINISTRAÇÃO")
+    if (item.section !== currentSection) {
+      currentSection = item.section;
+      if (item.section) {
+        sidebar.appendChild(
+          el('div', { class: 'sidebar-section' }, item.section),
+        );
+      }
+    }
+
+    // Delega a ação de navegação para quem chamou a sidebar (onNavigate)
+    const navItem = el(
+      'button',
+      {
+        class: `nav-item${item.page === 'dashboard' ? ' active' : ''}`,
+        'data-page': item.page,
+        onClick: (e) => {
+          document
+            .querySelectorAll('.nav-item')
+            .forEach((n) => n.classList.remove('active'));
+          e.currentTarget.classList.add('active');
+          onNavigate(item.page);
+        },
+      },
+      item.icon(),
+      item.label,
+    );
+
+    sidebar.appendChild(navItem);
+  });
+
+  // O bottom será adicionado no próximo commit
+
+  // Single DOM Append: Injeta tudo de uma vez na tela para melhor performance.
+  container.appendChild(sidebar);
+}
+
 // ── Factory de SVGs ────────────────────────────────────────
 // Gera os ícones direto no DOM. Evita requisições HTTP extras e permite herdar a cor do texto (útil pro Dark Mode).
 function svgDashboard() {
