@@ -1,6 +1,13 @@
 import { el } from '../utils/dom.js';
 import { initials } from '../utils/fp.js';
 
+// Importando os dados da store para os badges dinâmicos
+import {
+  getReservations,
+  getApprovals,
+  getNotifications,
+} from '../data/store.js';
+
 // Array declarativo: centraliza as páginas. Para adicionar/remover rotas no futuro, basta mexer aqui.
 const NAV_ITEMS = [
   {
@@ -21,8 +28,19 @@ const NAV_ITEMS = [
     label: 'Minhas Reservas',
     icon: svgReserv,
     section: 'RESERVAS',
+    // Conta as reservas não lidas do usuário
+    badge: () =>
+      getReservations().filter((r) => r.requester === 'Diego Pessoa' && !r.read)
+        .length,
   },
-  { page: 'aprovacoes', label: 'Aprovações', icon: svgApproval, section: null },
+  {
+    page: 'aprovacoes',
+    label: 'Aprovações',
+    icon: svgApproval,
+    section: null,
+    // Conta as aprovações pendentes
+    badge: () => getApprovals().filter((a) => !a.read).length,
+  },
   {
     page: 'salas',
     label: 'Salas e Espaços',
@@ -30,7 +48,15 @@ const NAV_ITEMS = [
     section: 'ADMINISTRAÇÃO',
   },
   { page: 'usuarios', label: 'Usuários', icon: svgUser, section: null },
-  { page: 'notificacoes', label: 'Notificações', icon: svgBell, section: null },
+  {
+    page: 'notificacoes',
+    label: 'Notificações',
+    icon: svgBell,
+    section: null,
+    // Conta as notificações gerais não lidas
+    badge: () => getNotifications().filter((n) => !n.read).length,
+    roles: ['admin'],
+  },
 ];
 
 // Componente de UI puro: recebe dados e callbacks, não gerencia estado próprio.
@@ -93,6 +119,25 @@ export function createSidebar(
       item.icon(),
       item.label,
     );
+
+    // Renderiza o badge ao lado do label se a função existir
+    if (item.badge) {
+      const badgeVal =
+        typeof item.badge === 'function' ? item.badge() : item.badge;
+      const displayVal = badgeVal > 0 ? badgeVal : '';
+
+      // Cria o elemento visual da bolinha vermelha
+      const badgeEl = el(
+        'span',
+        { class: 'notif-badge', id: `badge-${item.page}` },
+        displayVal,
+      );
+
+      // Esconde o badge se a contagem for zero
+      if (!displayVal) badgeEl.style.display = 'none';
+
+      navItem.appendChild(badgeEl);
+    }
 
     sidebar.appendChild(navItem);
   });
