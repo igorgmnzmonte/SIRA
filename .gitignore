@@ -42,7 +42,7 @@ Thumbs.db
 .py
 *.pdf
 !docs/team-tasks/sprint-1/*.pdf
-!docs/reports/*.pdf
+!docs/reports/sprint-1/*.pdf
 *.patch
 
 # Python (caso alguém rode os scripts auxiliares)
