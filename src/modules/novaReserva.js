@@ -113,3 +113,13 @@ function formField(label, input) {
     input,
   );
 }
+
+function parseTimeStr(tStr) {
+  let clean = tStr.trim().toLowerCase();
+  if (clean.includes("h")) {
+    clean = clean.replace("h", ":");
+    if (clean.endsWith(":")) clean += "00";
+  }
+  const [h, m] = clean.split(":");
+  return parseInt(h || 0) * 60 + parseInt(m || 0);
+}
