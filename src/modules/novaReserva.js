@@ -317,3 +317,21 @@ function performReservation(room, formData) {
   if (window.updateSidebarBadges) window.updateSidebarBadges();
   window.navigatePage("reservas");
 }
+
+const days = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
+const dayButtons = days.map((d) => {
+  const b = el("button", { class: "btn btn-sm", style: { minWidth: "40px" } }, d);
+  b.dataset.selected = "false";
+  b.addEventListener("click", (e) => {
+    e.preventDefault();
+    const isSel = b.dataset.selected === "true";
+    b.dataset.selected = isSel ? "false" : "true";
+    b.style.backgroundColor = isSel ? "" : "var(--accent)";
+    b.style.color = isSel ? "" : "#fff";
+  });
+  return b;
+});
+dayButtons.forEach((b) => weekDaysContainer.appendChild(b));
+
+recurSim.addEventListener("change", () => (weekDaysContainer.style.display = "flex"));
+recurNao.addEventListener("change", () => (weekDaysContainer.style.display = "none"));
