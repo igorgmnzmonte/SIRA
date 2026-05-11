@@ -121,3 +121,199 @@ function parseTimeStr(tStr) {
   const [h, m] = clean.split(":");
   return parseInt(h || 0) * 60 + parseInt(m || 0);
 }
+
+function searchRooms(type, container, formData) {
+  render(container, "");
+  let rooms = getRooms();
+  if (type) {
+    rooms = rooms.filter((r) => r.type === type);
+  }
+
+  if (formData.dateStart && formData.timeStart && formData.timeEnd) {
+    const [y, m, d] = formData.dateStart.split("-");
+    const formattedDate = `${d}/${m}`;
+    const startMins = parseTimeStr(formData.timeStart);
+    const endMins = parseTimeStr(formData.timeEnd);
+
+    if (startMins >= endMins) {
+      toast("O horário final deve ser maior que o inicial.", "error");
+      return;
+    }
+
+    const allRes = getReservations();
+    rooms = rooms.filter((room) => {
+      const roomRes = allRes.filter(
+        (res) =>
+          res.room === room.name &&
+          res.date === formattedDate &&
+          res.status !== "rejected",
+      );
+      const hasOverlap = roomRes.some((res) => {
+        let tStr = res.time;
+        tStr = tStr.replace("–", "-");
+        const [t1, t2] = tStr.split("-");
+        const resStart = parseTimeStr(t1);
+        const resEnd = parseTimeStr(t2);
+        return startMins < resEnd && endMins > resStart;
+      });
+      return !hasOverlap;
+    });
+  }
+
+  if (rooms.length === 0) {
+    container.appendChild(el("div", {}, "Nenhuma sala encontrada para este tipo."));
+    return;
+  }
+
+  rooms.forEach((r) => {
+    const card = el(
+      "div",
+      {
+        class: "room-card",
+        style: {
+          padding: "16px",
+          border: "1px solid var(--border-light)",
+          borderRadius: "8px",
+          background: "var(--bg-primary)",
+          cursor: "pointer",
+        },
+        onClick: () => showRoomDetailsModal(r, formData),
+      },
+      el("div", { style: { fontSize: "15px", fontWeight: "600", marginBottom: "8px" } }, r.name),
+      el("div", { style: { fontSize: "12px", color: "var(--text-tertiary)", marginBottom: "12px" } },
+        `Capacidade: ${r.capacity} · Bloco: ${r.block}`,
+      ),
+      btn("Reservar", "btn-primary btn-sm", (e) => {
+        e.stopPropagation();
+        performReservation(r, formData);
+      }),
+    );
+    container.appendChild(card);
+  });
+}
+
+function showRoomDetailsModal(room, formData) {
+  const hasTime = formData.dateStart && formData.timeStart && formData.timeEnd;
+  const statusBadgeInfo = hasTime
+    ? { bg: "#E6F4EA", col: "#166534", text: "Disponível no horário solicitado" }
+    : { bg: "#E2E8F0", col: "#475569", text: "Preencha o horário para confirmar disponibilidade" };
+
+  const statusBadge = el("span", {
+    style: {
+      display: "inline-block",
+      background: statusBadgeInfo.bg,
+      color: statusBadgeInfo.col,
+      padding: "4px 8px",
+      borderRadius: "4px",
+      fontSize: "12px",
+      fontWeight: "bold",
+    },
+  }, statusBadgeInfo.text);
+
+  const body = el("div", {
+    style: { display: "flex", flexDirection: "column", gap: "12px", padding: "8px 0" },
+  },
+    statusBadge,
+    el("div", { style: { fontSize: "14px" } }, el("strong", {}, "Tipo: "), room.type),
+    el("div", { style: { fontSize: "14px" } }, el("strong", {}, "Capacidade: "), `${room.capacity} pessoas`),
+    el("div", { style: { fontSize: "14px" } }, el("strong", {}, "Localização: "), room.block),
+    el("div", { style: { fontSize: "14px" } }, el("strong", {}, "Recursos: "), room.resources ? room.resources.join(", ") : "Nenhum"),
+  );
+
+  createModal({
+    id: "modal-room-details",
+    title: `Detalhes: ${room.name}`,
+    body,
+    actions: [
+      { label: "Fechar", onClick: () => closeModal("modal-room-details") },
+      {
+        label: "Reservar",
+        primary: true,
+        onClick: () => {
+          closeModal("modal-room-details");
+          performReservation(room, formData);
+        },
+      },
+    ],
+  });
+
+  openModal("modal-room-details");
+}
+
+function performReservation(room, formData) {
+  if (!formData.dateStart || !formData.timeStart || !formData.timeEnd || !formData.purpose) {
+    toast("Preencha data, horários e finalidade antes de reservar.", "error");
+    return;
+  }
+
+  const [y, m, d] = formData.dateStart.split("-");
+  const formattedDate = `${d}/${m}`;
+  const startMins = parseTimeStr(formData.timeStart);
+  const endMins = parseTimeStr(formData.timeEnd);
+
+  if (startMins >= endMins) {
+    toast("O horário final deve ser maior que o inicial.", "error");
+    return;
+  }
+
+  const allRes = getReservations();
+  const roomRes = allRes.filter(
+    (res) =>
+      res.room === room.name &&
+      res.date === formattedDate &&
+      res.status !== "rejected",
+  );
+
+  const hasOverlap = roomRes.some((res) => {
+    let tStr = res.time.replace("–", "-");
+    const [t1, t2] = tStr.split("-");
+    const resStart = parseTimeStr(t1);
+    const resEnd = parseTimeStr(t2);
+    return startMins < resEnd && endMins > resStart;
+  });
+
+  if (hasOverlap) {
+    toast("A sala já possui uma reserva nesse horário. Por favor atualize a busca.", "error");
+    return;
+  }
+
+  const formattedTime = `${formData.timeStart}–${formData.timeEnd}`;
+  const genResId = genId("res");
+
+  saveReservations([
+    ...getReservations(),
+    {
+      id: genResId,
+      room: room.name,
+      date: formattedDate,
+      time: formattedTime,
+      purpose: formData.purpose,
+      requester: CURRENT_USER.name,
+      requesterEmail: CURRENT_USER.email,
+      status: "pending",
+      read: true,
+    },
+  ]);
+
+  const allRooms = getRooms();
+  saveRooms(allRooms.map((r) => r.name === room.name ? { ...r, status: "reserved" } : r));
+
+  saveApprovals([
+    ...getApprovals(),
+    {
+      id: "ap_" + genResId,
+      room: room.name,
+      date: formattedDate,
+      time: formattedTime,
+      purpose: formData.purpose,
+      requester: CURRENT_USER.name,
+      requesterEmail: CURRENT_USER.email,
+      level: "1º nível",
+      read: false,
+    },
+  ]);
+
+  toast("Sucesso! Sua reserva foi enviada para aprovação.", "success");
+  if (window.updateSidebarBadges) window.updateSidebarBadges();
+  window.navigatePage("reservas");
+}
