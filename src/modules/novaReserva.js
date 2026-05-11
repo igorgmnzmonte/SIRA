@@ -252,3 +252,89 @@ function searchRooms(type, container, formData) {
   });
 }
 
+function showRoomDetailsModal(room, formData) {
+  const hasTime = formData.dateStart && formData.timeStart && formData.timeEnd;
+  const statusBadgeInfo = hasTime
+    ? {
+        bg: "#E6F4EA",
+        col: "#166534",
+        text: "Disponível no horário solicitado",
+      }
+    : {
+        bg: "#E2E8F0",
+        col: "#475569",
+        text: "Preencha o horário para confirmar disponibilidade",
+      };
+
+  const statusBadge = el(
+    "span",
+    {
+      style: {
+        display: "inline-block",
+        background: statusBadgeInfo.bg,
+        color: statusBadgeInfo.col,
+        padding: "4px 8px",
+        borderRadius: "4px",
+        fontSize: "12px",
+        fontWeight: "bold",
+      },
+    },
+    statusBadgeInfo.text,
+  );
+
+  const body = el(
+    "div",
+    {
+      style: {
+        display: "flex",
+        flexDirection: "column",
+        gap: "12px",
+        padding: "8px 0",
+      },
+    },
+    statusBadge,
+    el(
+      "div",
+      { style: { fontSize: "14px" } },
+      el("strong", {}, "Tipo: "),
+      room.type,
+    ),
+    el(
+      "div",
+      { style: { fontSize: "14px" } },
+      el("strong", {}, "Capacidade: "),
+      `${room.capacity} pessoas`,
+    ),
+    el(
+      "div",
+      { style: { fontSize: "14px" } },
+      el("strong", {}, "Localização: "),
+      room.block,
+    ),
+    el(
+      "div",
+      { style: { fontSize: "14px" } },
+      el("strong", {}, "Recursos: "),
+      room.resources ? room.resources.join(", ") : "Nenhum",
+    ),
+  );
+
+  createModal({
+    id: "modal-room-details",
+    title: `Detalhes: ${room.name}`,
+    body,
+    actions: [
+      { label: "Fechar", onClick: () => closeModal("modal-room-details") },
+      {
+        label: "Reservar",
+        primary: true,
+        onClick: () => {
+          closeModal("modal-room-details");
+          performReservation(room, formData);
+        },
+      },
+    ],
+  });
+
+  openModal("modal-room-details");
+}
