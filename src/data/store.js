@@ -179,6 +179,9 @@ export function generateId() {
   return `${timestamp}-${randomSuffix}`;
 }
 
+// Alias para compatibilidade
+export const genId = generateId;
+
 // Salva uma reserva. Se o usuário for admin, propaga a gravação para o usuário proprietário da reserva.
 // Caso contrário, salva na coleção do usuário logado.
 export function saveReservation(reservation) {
@@ -222,6 +225,9 @@ export function saveReservation(reservation) {
   return saveCollection('reservations', userReservations);
 }
 
+// Alias para compatibilidade
+export const saveReservations = saveReservation;
+
 // Salva uma aprovação. Se o usuário for admin, propaga a gravação para o usuário proprietário da aprovação.
 // Caso contrário, salva na coleção do usuário logado.
 export function saveApproval(approval) {
@@ -251,6 +257,9 @@ export function saveApproval(approval) {
 
   return savedApproval;
 }
+
+// Alias para compatibilidade
+export const saveApprovals = saveApproval;
 
 // Atualiza o status da reserva do solicitante vinculada à aprovação.
 function updateReservationStatusForApproval(approval) {
@@ -324,6 +333,9 @@ export function saveRoom(room) {
 
   return saveCollection('rooms', userRooms);
 }
+
+// Alias para compatibilidade
+export const saveRooms = saveRoom;
 
 // Salva uma notificação. Notificações são pessoais, então sempre na coleção do usuário logado.
 // Admin não propaga notificações para outros usuários.
