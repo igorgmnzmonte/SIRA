@@ -104,6 +104,8 @@ function buildRow(r, tbody) {
     actionsCell.appendChild(btn("Cancelar", "btn-sm btn-danger", () => deleteReservation(r.id, tbody)));
   } else if (r.status === "approved") {
     actionsCell.appendChild(btn("Cancelar", "btn-sm btn-danger", () => deleteReservation(r.id, tbody)));
+  } else if (r.status === "rejected") {
+    actionsCell.appendChild(btn("Recorrer", "btn-sm", () => toast("Recurso enviado ao coordenador.", "success")));
   }
 
   return tableRow([
