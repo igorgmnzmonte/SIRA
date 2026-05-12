@@ -81,7 +81,18 @@ function renderSignup() {
     '<h1>Tela de Cadastro</h1><button onclick="location.reload()">Voltar</button>';
 }
 
+// ── T-09.3: RESTAURA O TEMA ESCOLHIDO ANTES DE RENDERIZAR ──
+// Lê a preferência persistida em localStorage["sira-theme"] e aplica a
+// classe .dark em <html>. Roda logo no início do bootstrap para evitar
+// flash de tema claro (FOUC) quando o usuário escolheu o modo escuro.
+function restoreTheme() {
+  if (localStorage.getItem('sira-theme') === 'dark') {
+    document.documentElement.classList.add('dark');
+  }
+}
+
 function bootstrap() {
+  restoreTheme();
   tryRestoreSession();
 
   if (!CURRENT_USER) {
