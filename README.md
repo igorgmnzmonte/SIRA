@@ -81,31 +81,52 @@ A aplicação estará disponível em **http://localhost:5173**.
 .
 ├── .github/
 │   └── workflows/
-│       ├── ci.yml          # Valida formatação e build em PRs e push em develop
-│       └── deploy.yml      # Publica no GitHub Pages quando uma release é publicada
+│       ├── ci.yml             # Valida formatação e build em PRs e push em develop
+│       └── deploy.yml         # Publica no GitHub Pages quando uma release é publicada
 ├── .husky/
-│   └── pre-commit          # Dispara `npx lint-staged` antes de cada commit
-├── public/                 # Assets estáticos copiados como estão para a raiz do build
-├── src/                    # Código-fonte da aplicação
+│   └── pre-commit             # Dispara `npx lint-staged` antes de cada commit
+├── docs/
+│   ├── reports/sprint-1/      # Relatórios consolidados da sprint (épicos, features, sequência ótima)
+│   └── team-tasks/sprint-1/   # PDFs individuais das tarefas de cada membro do time
+├── public/
+│   ├── icons/                 # Ícones SVG usados pela aplicação
+│   └── screenshots/           # Capturas de tela do produto (`Preview-temp.png` etc.)
+├── src/                       # Código-fonte da aplicação
+│   ├── components/
+│   │   ├── modal.js           # API de modais (createModal/openModal/closeModal) + listener global Esc
+│   │   └── sidebar.js         # Sidebar contextual com badges, userPill, logout e toggle de tema
 │   ├── data/
-│   │   ├── logins.json     # Seed do usuário admin
-│   │   └── store.js        # Camada AUTH (CURRENT_USER, login, logout, tryRestoreSession) — estendida pelos demais membros
+│   │   ├── logins.json        # Seed do usuário admin
+│   │   ├── seed.json          # Seeds vazios para rooms / reservations / notifications / approvals
+│   │   └── store.js           # Camada de dados: AUTH + persistência por usuário + aprovações cross-user
+│   ├── modules/
+│   │   ├── calendar.js        # Grade semanal 7d × 12h com eventos por status (US-13)
+│   │   └── novaReserva.js     # Formulário de busca de salas + criação de reserva com anti-conflito (US-14/15)
 │   ├── utils/
-│   │   ├── dom.js          # Factories de elementos: el, btn, badge, toast, tableRow, confirm
-│   │   └── fp.js           # Helpers funcionais: filterByText, computeStats (reduce), initials, statusBadge, etc.
-│   ├── auth.css            # Estilos das telas de login e cadastro
-│   ├── home.css            # Estilos da home (calendário/dashboard — USes futuras)
-│   ├── main.js             # Entry point — bootstrap, renderLogin e renderSignup inline
-│   └── style.css           # Estilos globais com CSS Variables e suporte a dark mode
-├── .nvmrc                  # Versão do Node (24 LTS)
-├── .prettierrc             # Regras do Prettier (semi, single quote, trailing comma)
-├── .prettierignore         # Arquivos ignorados pelo Prettier
-├── eslint.config.js        # ESLint flat config + integração com Prettier
-├── index.html              # Entry point HTML do Vite (carrega /src/main.js como módulo)
-├── vite.config.js          # Configuração do Vite (base condicional via env GITHUB_PAGES)
+│   │   ├── dom.js             # Factories: el, render, btn, badge, tableRow, toast, confirm
+│   │   └── fp.js              # Helpers funcionais: filterByText, computeStats (reduce), initials, statusBadge, etc.
+│   ├── auth.css               # Estilos das telas de login e cadastro
+│   ├── home.css               # Estilos da home, sidebar e calendário (grid responsivo)
+│   ├── main.js                # Entry point — bootstrap, autenticação inline, roteador e drawer mobile
+│   └── style.css              # Estilos globais com CSS Variables e suporte a dark mode
+├── .nvmrc                     # Versão do Node (24 LTS)
+├── .prettierrc                # Regras do Prettier (semi, single quote, trailing comma)
+├── .prettierignore            # Arquivos ignorados pelo Prettier
+├── eslint.config.js           # ESLint flat config + integração com Prettier
+├── index.html                 # Entry point HTML do Vite (carrega /src/main.js como módulo)
+├── vite.config.js             # Configuração do Vite (base condicional via env GITHUB_PAGES)
 ├── package.json
 └── package-lock.json
 ```
+
+> **Notas de domínio:**
+>
+> - `src/components/` contém os blocos visuais reutilizáveis (sidebar, modal).
+> - `src/modules/` contém uma página por arquivo — cada `renderX` é registrado em
+>   `PAGE_RENDERERS` no `main.js` e roteado por URL via `pushState` + `popstate`.
+> - `src/data/store.js` é a única fonte de verdade para LocalStorage, com
+>   particionamento por e-mail (`sira_db/<email>/<colecao>.json`) e consolidação
+>   automática quando o usuário logado é admin.
 
 ---
 
@@ -132,7 +153,9 @@ O deploy é **manual via GitHub Releases**: ao publicar uma release, o
 workflow `deploy.yml` roda o build e publica a pasta `dist/` no GitHub
 Pages.
 
-- URL pública: `https://<usuario>.github.io/SIRA-Sistema-de-Reserva-Salas-e-Equipamentos/`
+- URL pública: `https://gabemarques-intetsu.github.io/SIRA-Sistema-de-Reserva-Salas-e-Equipamentos/`
+  (o slug de `base` preserva o nome antigo do repositório porque o GitHub Pages
+  é servido a partir desse path; o repositório em si foi renomeado para `SIRA`).
 - O `vite.config.js` aplica o `base` apenas quando `GITHUB_PAGES=true`
   (variável injetada pelo step _Build_ do `deploy.yml`). Em
   desenvolvimento e `npm run preview` locais, a `base` é `/` — sem
@@ -162,42 +185,111 @@ estilo Conventional Commits — `feat`, `fix`, `chore`, `ci`, `docs`,
 
 ---
 
-## 🗺️ Roadmap da entrega — Gabriel Marques
+## 🗺️ Roadmap da entrega
 
-Responsável pelo bloco **Fundação + Autenticação + Tema** do SIRA — 6 das
-25 user stories do projeto. As demais ficam com os outros quatro membros
-do time (Ian, Igor, José Henrique e Pedro).
+O backlog do SIRA foi quebrado em **25 user stories** distribuídas em
+**13 épicos** e divididas entre os 5 membros do time. A sequência de
+implementação está descrita em [`docs/reports/sprint-1/sequencia_us.pdf`](docs/reports/sprint-1/sequencia_us.pdf)
+(quem desbloqueia quem). O detalhamento individual de cada membro está
+em [`docs/team-tasks/sprint-1/`](docs/team-tasks/sprint-1/).
+
+### Bloco 1 — Fundação, Autenticação e Tema · _Gabriel Marques_
 
 | US    | Descrição                                | Status      | PR                                                                                                                                                                                                      |
 | ----- | ---------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | US-01 | Configurar projeto base com Vite         | ✅ Mergeada | [#125](https://github.com/GabeMarques-Intetsu/SIRA/pull/125)                                                                                                                                            |
-| US-02 | Criar utilitários e estilos globais      | ✅ Mergeada | [#126](https://github.com/GabeMarques-Intetsu/SIRA/pull/126)                                                                                                                                            |
+| US-02 | Criar utilitários funcionais e estilos   | ✅ Mergeada | [#126](https://github.com/GabeMarques-Intetsu/SIRA/pull/126)                                                                                                                                            |
 | US-03 | Permitir login pelo e-mail institucional | ✅ Mergeada | [#127](https://github.com/GabeMarques-Intetsu/SIRA/pull/127)                                                                                                                                            |
 | US-04 | Permitir solicitação de cadastro         | ✅ Mergeada | [#128](https://github.com/GabeMarques-Intetsu/SIRA/pull/128)                                                                                                                                            |
 | US-05 | Permitir logout do sistema               | ✅ Mergeada | [#127](https://github.com/GabeMarques-Intetsu/SIRA/pull/127) (T-05.2 — `logout()` em `store.js`) · [#134](https://github.com/GabeMarques-Intetsu/SIRA/pull/134) (T-05.1 — botão "Sair" no `userPill`)   |
 | US-09 | Alternar tema claro/escuro               | ✅ Mergeada | [#134](https://github.com/GabeMarques-Intetsu/SIRA/pull/134) (T-09.1/T-09.2 — toggle + persistência) · [#154](https://github.com/GabeMarques-Intetsu/SIRA/pull/154) (T-09.3 — restauração no bootstrap) |
 
+**Conclusão:** 6 / 6 user stories concluídas.
+
+### Bloco 2 — Shell, Navegação, Mobile, Modais e Calendário · _Ian Lucas_
+
+| US    | Descrição                                          | Status      | PR                                                           |
+| ----- | -------------------------------------------------- | ----------- | ------------------------------------------------------------ |
+| US-06 | Sidebar contextual com badges e filtro por role    | ✅ Mergeada | [#134](https://github.com/GabeMarques-Intetsu/SIRA/pull/134) |
+| US-07 | Roteamento por URL com `pushState` + `popstate`    | ✅ Mergeada | [#144](https://github.com/GabeMarques-Intetsu/SIRA/pull/144) |
+| US-08 | Drawer mobile com hambúrguer e tabelas responsivas | ✅ Mergeada | [#145](https://github.com/GabeMarques-Intetsu/SIRA/pull/145) |
+| US-13 | Calendário semanal 7d × 12h com eventos por status | ✅ Mergeada | [#147](https://github.com/GabeMarques-Intetsu/SIRA/pull/147) |
+| US-25 | Sistema centralizado de modais (create/open/close) | ✅ Mergeada | [#149](https://github.com/GabeMarques-Intetsu/SIRA/pull/149) |
+
+**Conclusão:** 5 / 5 user stories concluídas.
+
+### Bloco 3 — Persistência, Dashboard e Notificações · _Igor Gimenez_
+
+| US    | Descrição                                                | Status      | PR                                                           |
+| ----- | -------------------------------------------------------- | ----------- | ------------------------------------------------------------ |
+| US-10 | LocalStorage isolado por usuário (`sira_db/<email>/...`) | ✅ Mergeada | [#143](https://github.com/GabeMarques-Intetsu/SIRA/pull/143) |
+| US-11 | Sincronização aprovação → reserva → notificação          | ✅ Mergeada | [#143](https://github.com/GabeMarques-Intetsu/SIRA/pull/143) |
+| US-12 | Dashboard administrativo com KPIs em tempo real          | ⏳ Pendente | —                                                            |
+| US-24 | Caixa de notificações com marcação como lidas            | ⏳ Pendente | —                                                            |
+
+**Conclusão:** 2 / 4 user stories concluídas.
+
+### Bloco 4 — Nova Reserva e CRUD de Reservas · _José Henrique_
+
+| US    | Descrição                                             | Status      | PR                                                           |
+| ----- | ----------------------------------------------------- | ----------- | ------------------------------------------------------------ |
+| US-14 | Busca de salas com filtros e anti-conflito de horário | ✅ Mergeada | [#152](https://github.com/GabeMarques-Intetsu/SIRA/pull/152) |
+| US-15 | Detalhes da sala + reserva 1-clique com aprovação     | ✅ Mergeada | [#152](https://github.com/GabeMarques-Intetsu/SIRA/pull/152) |
+| US-16 | Listar minhas reservas com filtros e busca textual    | ⏳ Pendente | —                                                            |
+| US-17 | Ver, editar e cancelar reservas pendentes             | ⏳ Pendente | —                                                            |
+| US-18 | Exportar reservas em CSV                              | ⏳ Pendente | —                                                            |
+
+**Conclusão:** 2 / 5 user stories concluídas.
+
+### Bloco 5 — Administração (Aprovações, Salas e Usuários) · _Pedro Sales_
+
+| US    | Descrição                                           | Status      | PR  |
+| ----- | --------------------------------------------------- | ----------- | --- |
+| US-19 | Fila consolidada de aprovações pendentes            | ⏳ Pendente | —   |
+| US-20 | Aprovar / recusar reservas com notificação ao autor | ⏳ Pendente | —   |
+| US-21 | CRUD de salas com filtros, recursos e status        | ⏳ Pendente | —   |
+| US-22 | CRUD de usuários com perfis professor/admin         | ⏳ Pendente | —   |
+| US-23 | Aprovar/recusar solicitações de cadastro pendentes  | ⏳ Pendente | —   |
+
+**Conclusão:** 0 / 5 user stories concluídas.
+
+### Resumo geral
+
+| Bloco                       | Responsável     | Concluído | Total  |
+| --------------------------- | --------------- | --------- | ------ |
+| Fundação + Auth + Tema      | Gabriel Marques | 6         | 6      |
+| Shell + Modais + Calendário | Ian Lucas       | 5         | 5      |
+| Persistência + Dashboard    | Igor Gimenez    | 2         | 4      |
+| Reservas (Nova + CRUD)      | José Henrique   | 2         | 5      |
+| Administração               | Pedro Sales     | 0         | 5      |
+| **Total**                   | —               | **15**    | **25** |
+
 **O que já funciona em `develop`:**
 
-- Tela de login validando contra o seed inicial (`admin@ifpb.edu.br`)
-- Tela de cadastro com validação de campos obrigatórios e ID `su-<timestamp>`
-- Sessão persistente em `localStorage["sira-auth"]` restaurada no
-  bootstrap (sobrevive a `F5`)
-- Botão **Sair** no rodapé da sidebar limpa a sessão e volta para o login
-- Toggle de **modo escuro** no rodapé da sidebar persiste a escolha em
-  `localStorage["sira-theme"]` e é restaurada no bootstrap (sem flash de
-  tema claro ao recarregar)
-
-**Status do bloco:** todas as 6 user stories sob responsabilidade do
-Gabriel (US-01, US-02, US-03, US-04, US-05, US-09) estão concluídas e
-mergeadas em `develop`.
+- Login institucional + cadastro de professor + sessão persistente em `F5`
+- Sidebar contextual com badges dinâmicos, filtragem por role, logout e
+  toggle de modo escuro com persistência (sobrevive a refresh)
+- Roteamento por URL com `pushState`, `popstate` e middleware de segurança
+  por perfil
+- Drawer mobile com hambúrguer dinâmico e tabelas convertidas em cards
+- Calendário semanal 7d × 12h com eventos coloridos por status
+- Sistema de modais centralizado com fechamento via Escape
+- Persistência por usuário no LocalStorage com consolidação para admin
+- Nova reserva com busca anti-conflito e fluxo de aprovação em 1º nível
 
 ---
 
-## 👤 Autor
+## 👥 Equipe
 
-**Gabriel Marques** — [@GabeMarques-Intetsu](https://github.com/GabeMarques-Intetsu)
+| Membro              | GitHub                                                         | Bloco                                         |
+| ------------------- | -------------------------------------------------------------- | --------------------------------------------- |
+| **Gabriel Marques** | [@GabeMarques-Intetsu](https://github.com/GabeMarques-Intetsu) | Fundação + Autenticação + Tema                |
+| **Ian Lucas**       | [@IanGds](https://github.com/IanGds)                           | Shell + Navegação + Modais + Calendário       |
+| **Igor Gimenez**    | [@igorgmnzmonte](https://github.com/igorgmnzmonte)             | Persistência + Dashboard + Notificações       |
+| **José Henrique**   | [@jhenriquecs](https://github.com/jhenriquecs)                 | Reservas (Nova Reserva + CRUD + CSV)          |
+| **Pedro Sales**     | _GitHub a confirmar_                                           | Administração (Aprovações + Salas + Usuários) |
 
-## 📄 Licença
-
-Distribuído sob a licença [MIT](LICENSE).
+Projeto acadêmico desenvolvido no IFPB para as disciplinas de
+**Programação para Web 2** e **Engenharia de Requisitos de Software**.
+Código-fonte mantido neste repositório sem licença pública declarada —
+todos os direitos reservados aos autores acima.
