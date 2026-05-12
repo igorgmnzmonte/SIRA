@@ -24,10 +24,7 @@ export function renderReservations(page) {
   const tbody = document.createElement("tbody");
   refreshTable(tbody);
 
-  const searchInput = el("input", {
-    type: "text",
-    placeholder: "Buscar reserva...",
-  });
+  const searchInput = el("input", { type: "text", placeholder: "Buscar reserva..." });
   searchInput.addEventListener("input", (e) => {
     searchQuery = e.target.value;
     refreshTable(tbody);
@@ -50,15 +47,9 @@ export function renderReservations(page) {
   ];
 
   const chips = FILTERS.map((f) => {
-    const chip = el(
-      "div",
-      { class: `filter-chip${f.key === "all" ? " active" : ""}` },
-      f.label,
-    );
+    const chip = el("div", { class: `filter-chip${f.key === "all" ? " active" : ""}` }, f.label);
     chip.addEventListener("click", () => {
-      document
-        .querySelectorAll(".filter-chip")
-        .forEach((c) => c.classList.remove("active"));
+      document.querySelectorAll(".filter-chip").forEach((c) => c.classList.remove("active"));
       chip.classList.add("active");
       activeFilter = f.key;
       refreshTable(tbody);
@@ -71,15 +62,9 @@ export function renderReservations(page) {
   const table = el(
     "div",
     { class: "table-wrap" },
-    el(
-      "table",
-      {},
-      el(
-        "thead",
-        {},
-        el(
-          "tr",
-          {},
+    el("table", {},
+      el("thead", {},
+        el("tr", {},
           el("th", {}, "Sala"),
           el("th", {}, "Data / Horário"),
           el("th", {}, "Finalidade"),
@@ -107,24 +92,7 @@ function refreshTable(tbody) {
     tbody,
     ...(filtered.length
       ? filtered.map((r) => buildRow(r, tbody))
-      : [
-          el(
-            "tr",
-            {},
-            el(
-              "td",
-              {
-                colspan: "6",
-                style: {
-                  textAlign: "center",
-                  color: "var(--text-tertiary)",
-                  padding: "32px",
-                },
-              },
-              "Nenhuma reserva encontrada.",
-            ),
-          ),
-        ]),
+      : [el("tr", {}, el("td", { colspan: "6", style: { textAlign: "center", color: "var(--text-tertiary)", padding: "32px" } }, "Nenhuma reserva encontrada."))]),
   );
 }
 
@@ -134,6 +102,10 @@ function buildRow(r, tbody) {
 
   const actionsCell = el("div", { class: "actions-row" });
   actionsCell.appendChild(btn("Ver", "btn-sm", () => openViewModal(r)));
+
+  if (r.status === "pending") {
+    actionsCell.appendChild(btn("Editar", "btn-sm", () => openEditModal(r, tbody)));
+  }
 
   return tableRow([
     r.room,
@@ -149,9 +121,7 @@ function openViewModal(r) {
   const statusLabel =
     { pending: "Pendente", approved: "Aprovada", rejected: "Recusada" }[r.status] ?? r.status;
 
-  const body = el(
-    "div",
-    {},
+  const body = el("div", {},
     infoRow("Sala", r.room),
     infoRow("Data", r.date),
     infoRow("Horário", r.time),
@@ -170,12 +140,63 @@ function openViewModal(r) {
   openModal("modal-view");
 }
 
+function openEditModal(r, tbody) {
+  const purposeInput = el("textarea", { class: "form-input", rows: "3", style: "resize:none" }, r.purpose);
+  const timeSelect = el(
+    "select",
+    { class: "form-input" },
+    ...["07:00–08:00", "08:00–10:00", "10:00–12:00", "14:00–16:00", "16:00–18:00"].map((t) => {
+      const o = document.createElement("option");
+      o.textContent = t;
+      if (t === r.time) o.selected = true;
+      return o;
+    }),
+  );
+
+  const body = el("div", {},
+    el("p", { style: { fontSize: "13px", color: "var(--text-secondary)", marginBottom: "16px" } }, `Sala: ${r.room} · ${r.date}`),
+    formField("Horário", timeSelect),
+    formField("Finalidade", purposeInput),
+  );
+
+  createModal({
+    id: "modal-edit",
+    title: "Editar Reserva",
+    body,
+    actions: [
+      { label: "Cancelar", onClick: () => closeModal("modal-edit") },
+      {
+        label: "Salvar alterações",
+        primary: true,
+        onClick: () => {
+          const updated = getReservations().map((res) =>
+            res.id === r.id
+              ? { ...res, time: timeSelect.value, purpose: purposeInput.value.trim() }
+              : res,
+          );
+          saveReservations(updated);
+          closeModal("modal-edit");
+          refreshTable(tbody);
+          toast("Reserva atualizada.", "success");
+        },
+      },
+    ],
+  });
+
+  openModal("modal-edit");
+}
+
 function infoRow(label, value) {
-  return el(
-    "div",
-    { style: { marginBottom: "10px" } },
+  return el("div", { style: { marginBottom: "10px" } },
     el("span", { style: { fontSize: "11px", color: "var(--text-tertiary)", display: "block" } }, label),
     el("span", { style: { fontSize: "13px" } }, value),
+  );
+}
+
+function formField(label, input) {
+  return el("div", { class: "form-field" },
+    el("label", { class: "form-label" }, label),
+    input,
   );
 }
 
