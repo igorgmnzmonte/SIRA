@@ -168,14 +168,14 @@ Responsável pelo bloco **Fundação + Autenticação + Tema** do SIRA — 6 das
 25 user stories do projeto. As demais ficam com os outros quatro membros
 do time (Ian, Igor, José Henrique e Pedro).
 
-| US    | Descrição                                | Status                           | PR                                                                                                   |
-| ----- | ---------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| US-01 | Configurar projeto base com Vite         | ✅ Mergeada                      | [#125](https://github.com/GabeMarques-Intetsu/SIRA-Sistema-de-Reserva-Salas-e-Equipamentos/pull/125) |
-| US-02 | Criar utilitários e estilos globais      | ✅ Mergeada                      | [#126](https://github.com/GabeMarques-Intetsu/SIRA-Sistema-de-Reserva-Salas-e-Equipamentos/pull/126) |
-| US-03 | Permitir login pelo e-mail institucional | ✅ Mergeada                      | [#127](https://github.com/GabeMarques-Intetsu/SIRA-Sistema-de-Reserva-Salas-e-Equipamentos/pull/127) |
-| US-04 | Permitir solicitação de cadastro         | ✅ Mergeada                      | [#128](https://github.com/GabeMarques-Intetsu/SIRA-Sistema-de-Reserva-Salas-e-Equipamentos/pull/128) |
-| US-05 | Permitir logout do sistema               | ⏳ Aguarda US-06 (sidebar — Ian) | —                                                                                                    |
-| US-09 | Alternar tema claro/escuro               | ⏳ Aguarda US-06 (sidebar — Ian) | —                                                                                                    |
+| US    | Descrição                                | Status      | PR                                                                                                                                                                                                      |
+| ----- | ---------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| US-01 | Configurar projeto base com Vite         | ✅ Mergeada | [#125](https://github.com/GabeMarques-Intetsu/SIRA/pull/125)                                                                                                                                            |
+| US-02 | Criar utilitários e estilos globais      | ✅ Mergeada | [#126](https://github.com/GabeMarques-Intetsu/SIRA/pull/126)                                                                                                                                            |
+| US-03 | Permitir login pelo e-mail institucional | ✅ Mergeada | [#127](https://github.com/GabeMarques-Intetsu/SIRA/pull/127)                                                                                                                                            |
+| US-04 | Permitir solicitação de cadastro         | ✅ Mergeada | [#128](https://github.com/GabeMarques-Intetsu/SIRA/pull/128)                                                                                                                                            |
+| US-05 | Permitir logout do sistema               | ✅ Mergeada | [#127](https://github.com/GabeMarques-Intetsu/SIRA/pull/127) (T-05.2 — `logout()` em `store.js`) · [#134](https://github.com/GabeMarques-Intetsu/SIRA/pull/134) (T-05.1 — botão "Sair" no `userPill`)   |
+| US-09 | Alternar tema claro/escuro               | ✅ Mergeada | [#134](https://github.com/GabeMarques-Intetsu/SIRA/pull/134) (T-09.1/T-09.2 — toggle + persistência) · [#154](https://github.com/GabeMarques-Intetsu/SIRA/pull/154) (T-09.3 — restauração no bootstrap) |
 
 **O que já funciona em `develop`:**
 
@@ -183,12 +183,14 @@ do time (Ian, Igor, José Henrique e Pedro).
 - Tela de cadastro com validação de campos obrigatórios e ID `su-<timestamp>`
 - Sessão persistente em `localStorage["sira-auth"]` restaurada no
   bootstrap (sobrevive a `F5`)
-- Folhas de estilo com CSS Variables prontas para o toggle de tema
-  claro/escuro (US-09)
+- Botão **Sair** no rodapé da sidebar limpa a sessão e volta para o login
+- Toggle de **modo escuro** no rodapé da sidebar persiste a escolha em
+  `localStorage["sira-theme"]` e é restaurada no bootstrap (sem flash de
+  tema claro ao recarregar)
 
-**Pendências do dono:** US-05 e US-09 dependem do componente `sidebar.js`
-que entra em `develop` via US-06. Após o merge da sidebar, ambas serão
-implementadas em sequência.
+**Status do bloco:** todas as 6 user stories sob responsabilidade do
+Gabriel (US-01, US-02, US-03, US-04, US-05, US-09) estão concluídas e
+mergeadas em `develop`.
 
 ---
 
