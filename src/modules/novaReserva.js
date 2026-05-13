@@ -122,6 +122,26 @@ export function renderNovaReserva(page) {
       formField('Horário Inicial', timeStart),
       formField('Horário Final', timeEnd),
     ),
+    formField(
+      'Deseja recorrência?',
+      el(
+        'div',
+        { style: { display: 'flex', gap: '16px' } },
+        el(
+          'label',
+          { style: { display: 'flex', alignItems: 'center', gap: '4px' } },
+          recurSim,
+          'Sim',
+        ),
+        el(
+          'label',
+          { style: { display: 'flex', alignItems: 'center', gap: '4px' } },
+          recurNao,
+          'Não',
+        ),
+      ),
+    ),
+    weekDaysContainer,
     formField('Tipo de Espaço', roomTypeSelect),
     formField('Finalidade', purposeInput),
     el(
