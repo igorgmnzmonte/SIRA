@@ -7,9 +7,9 @@ como projeto integrado das disciplinas:
 - **Engenharia de Requisitos de Software** (levantamento, especificação e
   validação dos requisitos)
 
-> Status: em desenvolvimento ativo. A primeira sprint é em **JavaScript puro
-> (ES Modules)** servido pelo Vite; a segunda sprint migra a camada de
-> apresentação para **React**.
+> Status: **sprint 1 concluída — 25 / 25 user stories entregues**.
+> A primeira sprint é em **JavaScript puro (ES Modules)** servido pelo Vite;
+> a segunda sprint migra a camada de apresentação para **React**.
 
 ---
 
@@ -222,10 +222,10 @@ em [`docs/team-tasks/sprint-1/`](docs/team-tasks/sprint-1/).
 | ----- | -------------------------------------------------------- | ----------- | ------------------------------------------------------------ |
 | US-10 | LocalStorage isolado por usuário (`sira_db/<email>/...`) | ✅ Mergeada | [#143](https://github.com/GabeMarques-Intetsu/SIRA/pull/143) |
 | US-11 | Sincronização aprovação → reserva → notificação          | ✅ Mergeada | [#143](https://github.com/GabeMarques-Intetsu/SIRA/pull/143) |
-| US-12 | Dashboard administrativo com KPIs em tempo real          | ⏳ Pendente | —                                                            |
-| US-24 | Caixa de notificações com marcação como lidas            | ⏳ Pendente | —                                                            |
+| US-12 | Dashboard administrativo com KPIs em tempo real          | ✅ Mergeada | [#161](https://github.com/GabeMarques-Intetsu/SIRA/pull/161) |
+| US-24 | Caixa de notificações com marcação como lidas            | ✅ Mergeada | [#162](https://github.com/GabeMarques-Intetsu/SIRA/pull/162) |
 
-**Conclusão:** 2 / 4 user stories concluídas.
+**Conclusão:** 4 / 4 user stories concluídas.
 
 ### Bloco 4 — Nova Reserva e CRUD de Reservas · _José Henrique_
 
@@ -233,23 +233,23 @@ em [`docs/team-tasks/sprint-1/`](docs/team-tasks/sprint-1/).
 | ----- | ----------------------------------------------------- | ----------- | ------------------------------------------------------------ |
 | US-14 | Busca de salas com filtros e anti-conflito de horário | ✅ Mergeada | [#152](https://github.com/GabeMarques-Intetsu/SIRA/pull/152) |
 | US-15 | Detalhes da sala + reserva 1-clique com aprovação     | ✅ Mergeada | [#152](https://github.com/GabeMarques-Intetsu/SIRA/pull/152) |
-| US-16 | Listar minhas reservas com filtros e busca textual    | ⏳ Pendente | —                                                            |
-| US-17 | Ver, editar e cancelar reservas pendentes             | ⏳ Pendente | —                                                            |
-| US-18 | Exportar reservas em CSV                              | ⏳ Pendente | —                                                            |
+| US-16 | Listar minhas reservas com filtros e busca textual    | ✅ Mergeada | [#159](https://github.com/GabeMarques-Intetsu/SIRA/pull/159) |
+| US-17 | Ver, editar e cancelar reservas pendentes             | ✅ Mergeada | [#159](https://github.com/GabeMarques-Intetsu/SIRA/pull/159) |
+| US-18 | Exportar reservas em CSV                              | ✅ Mergeada | [#159](https://github.com/GabeMarques-Intetsu/SIRA/pull/159) |
 
-**Conclusão:** 2 / 5 user stories concluídas.
+**Conclusão:** 5 / 5 user stories concluídas.
 
 ### Bloco 5 — Administração (Aprovações, Salas e Usuários) · _Pedro Sales_
 
-| US    | Descrição                                           | Status      | PR  |
-| ----- | --------------------------------------------------- | ----------- | --- |
-| US-19 | Fila consolidada de aprovações pendentes            | ⏳ Pendente | —   |
-| US-20 | Aprovar / recusar reservas com notificação ao autor | ⏳ Pendente | —   |
-| US-21 | CRUD de salas com filtros, recursos e status        | ⏳ Pendente | —   |
-| US-22 | CRUD de usuários com perfis professor/admin         | ⏳ Pendente | —   |
-| US-23 | Aprovar/recusar solicitações de cadastro pendentes  | ⏳ Pendente | —   |
+| US    | Descrição                                           | Status      | PR                                                           |
+| ----- | --------------------------------------------------- | ----------- | ------------------------------------------------------------ |
+| US-19 | Fila consolidada de aprovações pendentes            | ✅ Mergeada | [#163](https://github.com/GabeMarques-Intetsu/SIRA/pull/163) |
+| US-20 | Aprovar / recusar reservas com notificação ao autor | ✅ Mergeada | [#163](https://github.com/GabeMarques-Intetsu/SIRA/pull/163) |
+| US-21 | CRUD de salas com filtros, recursos e status        | ✅ Mergeada | [#164](https://github.com/GabeMarques-Intetsu/SIRA/pull/164) |
+| US-22 | CRUD de usuários com perfis professor/admin         | ✅ Mergeada | [#170](https://github.com/GabeMarques-Intetsu/SIRA/pull/170) |
+| US-23 | Aprovar/recusar solicitações de cadastro pendentes  | ✅ Mergeada | [#166](https://github.com/GabeMarques-Intetsu/SIRA/pull/166) |
 
-**Conclusão:** 0 / 5 user stories concluídas.
+**Conclusão:** 5 / 5 user stories concluídas.
 
 ### Resumo geral
 
@@ -257,12 +257,12 @@ em [`docs/team-tasks/sprint-1/`](docs/team-tasks/sprint-1/).
 | --------------------------- | --------------- | --------- | ------ |
 | Fundação + Auth + Tema      | Gabriel Marques | 6         | 6      |
 | Shell + Modais + Calendário | Ian Lucas       | 5         | 5      |
-| Persistência + Dashboard    | Igor Gimenez    | 2         | 4      |
-| Reservas (Nova + CRUD)      | José Henrique   | 2         | 5      |
-| Administração               | Pedro Sales     | 0         | 5      |
-| **Total**                   | —               | **15**    | **25** |
+| Persistência + Dashboard    | Igor Gimenez    | 4         | 4      |
+| Reservas (Nova + CRUD)      | José Henrique   | 5         | 5      |
+| Administração               | Pedro Sales     | 5         | 5      |
+| **Total**                   | —               | **25**    | **25** |
 
-**O que já funciona em `develop`:**
+**O que funciona em produção (release `v1.0.x`):**
 
 - Login institucional + cadastro de professor + sessão persistente em `F5`
 - Sidebar contextual com badges dinâmicos, filtragem por role, logout e
@@ -273,7 +273,18 @@ em [`docs/team-tasks/sprint-1/`](docs/team-tasks/sprint-1/).
 - Calendário semanal 7d × 12h com eventos coloridos por status
 - Sistema de modais centralizado com fechamento via Escape
 - Persistência por usuário no LocalStorage com consolidação para admin
-- Nova reserva com busca anti-conflito e fluxo de aprovação em 1º nível
+- **Nova reserva** com busca anti-conflito e fluxo de aprovação em 1º nível
+- **CRUD completo de reservas pessoais** (listar, filtrar, ver, editar,
+  cancelar, exportar CSV)
+- **Dashboard administrativo** com KPIs em tempo real (reduce de salas
+  e reservas)
+- **Caixa de notificações** com marcação individual e em massa
+- **Fila de aprovações** com decisão (aprovar/recusar) em 1 clique e
+  notificação automática ao solicitante
+- **CRUD de salas** com filtros por status (livre / ocupada / manutenção)
+  e seleção de recursos por checkbox
+- **CRUD de usuários** com perfis professor/admin, busca e remoção
+- **Revisão de solicitações de cadastro** pendentes com aprovar/recusar
 
 ---
 
@@ -285,7 +296,7 @@ em [`docs/team-tasks/sprint-1/`](docs/team-tasks/sprint-1/).
 | **Ian Lucas**       | [@IanGds](https://github.com/IanGds)                           | Shell + Navegação + Modais + Calendário       |
 | **Igor Gimenez**    | [@igorgmnzmonte](https://github.com/igorgmnzmonte)             | Persistência + Dashboard + Notificações       |
 | **José Henrique**   | [@jhenriquecs](https://github.com/jhenriquecs)                 | Reservas (Nova Reserva + CRUD + CSV)          |
-| **Pedro Sales**     | _GitHub a confirmar_                                           | Administração (Aprovações + Salas + Usuários) |
+| **Pedro Sales**     | [@pedro-sls](https://github.com/pedro-sls)                     | Administração (Aprovações + Salas + Usuários) |
 
 Projeto acadêmico desenvolvido no IFPB para as disciplinas de
 **Programação para Web 2** e **Engenharia de Requisitos de Software**.
