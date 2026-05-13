@@ -371,10 +371,3 @@ export const getUsersGlobal = () => {
   localStorage.setItem('sira:users', JSON.stringify(loginsData));
   return loginsData;
 };
-
-// Remove uma sala pelo ID
-export function deleteRoom(roomId) {
-  const userRooms = loadCollection('rooms');
-  const filteredRooms = userRooms.filter((r) => r.id !== roomId);
-  return saveCollection('rooms', filteredRooms);
-}
