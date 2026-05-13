@@ -372,27 +372,6 @@ export const getUsersGlobal = () => {
   return loginsData;
 };
 
-// Retorna a lista de usuários que estão aguardando aprovação
-export function getPendingUsers() {
-  const users = getUsersGlobal();
-  // Filtra apenas os usuários com status 'pending'
-  return users.filter((user) => user.status === 'pending');
-}
-
-// Atualiza o status de um usuário (aprovar ou recusar cadastro)
-export function resolveUserRegistration(updatedUser) {
-  const users = getUsersGlobal();
-  const userIndex = users.findIndex((u) => u.email === updatedUser.email);
-
-  if (userIndex >= 0) {
-    // Atualiza os dados do usuário no array
-    users[userIndex] = updatedUser;
-    // Salva a lista inteira de volta no LocalStorage
-    localStorage.setItem('sira:users', JSON.stringify(users));
-    return updatedUser;
-  }
-
-  return null;
 // Remove uma sala pelo ID
 export function deleteRoom(roomId) {
   const userRooms = loadCollection('rooms');

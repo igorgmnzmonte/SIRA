@@ -19,15 +19,12 @@ import { renderNovaReserva } from './modules/novaReserva.js';
 
 import { tryRestoreSession, login, CURRENT_USER } from './data/store.js';
 
-import { initAprovarCadastros } from './modules/aprovarCadastros.js';
-
 // [Apresentação] Roteador Funcional (Dispatcher): Mapeamos strings para funções de renderização.
 const PAGE_RENDERERS = {
   dashboard: renderDashboard,
   calendario: renderCalendar,
   reservas: renderReservations,
   aprovacoes: renderApprovals,
-  aprovarCadastros: initAprovarCadastros,
   salas: renderRooms,
   usuarios: renderUsers,
   notificacoes: renderNotifications,
